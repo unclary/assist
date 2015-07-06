@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" /> 
+	<title>获取微信授权的code</title>
+	<script type="text/javascript" src="/common/js/socket.io.js"></script>
+	<style type="text/css">
+		body { font-size: 30px; word-break: break-word; }
+	</style>
+</head>
+<body>
+	<div id="JS_params">
+		
+	</div>
+	<script type="text/javascript">
+		window.onload = function(){
+			var ws = io.connect(window.location.origin);
+			ws.on("get-wechat-code", function(data){
+				console.log(data);
+				var result = '<br/>model: '+data.ua.model+'<br/>code: '+data.code+'<br/>state: '+data.state+'<br/>url: '+data.url;
+				document.querySelector("#JS_params").innerHTML = document.querySelector("#JS_params").innerHTML+result;
+			});
+
+		}
+	</script>
+</body>
+</html>

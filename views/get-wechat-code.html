@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" /> 
+	<title>获取微信授权的code</title>
+	<script type="text/javascript" src="/common/js/socket.io.js"></script>
+	<style type="text/css">
+		body { font-size: 30px; word-break: break-word; }
+	</style>
+</head>
+<body>
+	<div id="JS_params">
+		
+	</div>
+	<script type="text/javascript">
+		function getParam(name) {
+		    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+		    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+		        results = regex.exec(location.search);
+		    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+		}
+		Date.prototype.Format = function(fmt) {
+			var o = {
+				"M+": this.getMonth() + 1, //鏈堜唤 
+				"d+": this.getDate(), //鏃� 
+				"h+": this.getHours(), //灏忔椂 
+				"m+": this.getMinutes(), //鍒� 
+				"s+": this.getSeconds(), //绉� 
+				"q+": Math.floor((this.getMonth() + 3) / 3), //瀛ｅ害 
+				"S": this.getMilliseconds() //姣 
+			};
+			if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+			for (var k in o)
+				if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+			return fmt;
+		}
+		String.prototype.getWechatUrl = function(){
+			var local = encodeURIComponent( window.location.href );
+			var proxy = encodeURIComponent( 'http://source.bozhong.com/wechat/redirect.html?redirect_uri=' + local );
+			var wechat = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx06297e68f1f987bd&redirect_uri=' + proxy + '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+			return wechat;
+		}
+		window.onload = function(){
+			var ws = io.connect(window.location.origin);
+			if( !!getParam("code") ){
+				var result = 'code: '+getParam("code")+'<br/>state: '+getParam("state")+'<br/>url: '+window.location.href;
+				document.querySelector("#JS_params").innerHTML = result;
+				ws.emit("get-wechat-code", {
+					code: getParam("code"),
+					state: getParam("state"),
+					url: window.location.href
+				});
+				return false;
+			} else {
+				window.location.href = window.location.href.getWechatUrl();
+			}
+
+		}
+	</script>
+</body>
+</html>
