@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" /> 
 	<title>在线日志</title>
-	<script type="text/javascript" src="common/js/logger.js"></script>
+	<script type="text/javascript" src="common/js/logger_default.js"></script>
 	<style type="text/css">
 	div { width: 100%; word-break: break-word; }
 	span { color: red; }
@@ -49,9 +49,9 @@
 				var em = document.createElement("em");
 				var i = document.createElement("i");
 				var hr = document.createElement("hr");
-				span.innerText = new Date().Format("yyyy-MM-dd hh:mm:ss")+"　　";
+				span.innerText = new Date().Format("MM-dd hh:mm:ss")+"　　";
 				em.innerText = JSON.stringify(data.content);
-				i.innerText = data.host + " ";
+				i.innerText = data.host + " " + data.ua.model + " ";
 				div.appendChild(i);
 				div.appendChild(span);
 				div.appendChild(em);

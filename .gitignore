@@ -24,3 +24,5 @@ spm_modules
 .cache
 dist
 coverage
+/statics/common/js/logger.js
+/views/logger.html

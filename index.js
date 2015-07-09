@@ -54,7 +54,8 @@ var server = app.listen(6001, function(){
 	    client.on("web_logger", function(xx){
 			client.broadcast.emit("web_logger", {
 				content: xx,
-				host: client.handshake.address.replace("::ffff:","")
+				host: client.handshake.address.replace("::ffff:",""),
+                ua: getUAVersion(client.handshake.headers["user-agent"])
 			});
 	    });
 	    
