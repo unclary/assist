@@ -1,0 +1,72 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>无标题</title>
+    <style type="text/css">
+    input {
+        display: block;
+        width: 100%;
+        line-height: 30px;
+        margin: 10px 0 0 0;
+        text-indent: 5px;
+    }
+    
+    button {
+        display: block;
+        width: 100%;
+        line-height: 30px;
+        margin: 10px 0 0 0;
+    }
+    
+    textarea {
+    	width: 100%;
+    	display: block;
+        margin: 10px 0;
+        padding: 10px;
+        height: 100px;
+        border: 1px solid #eee;
+        word-break: break-word;
+    }
+    
+    #JS_url_1,
+    #JS_url_2 {
+        
+    }
+    </style>
+</head>
+
+<body>
+    <input type="text" id="JS_fe" placeholder="最终跳转到前端的地址" value="http://huodong.office.bzdev.net/restful/doc.php" />
+    <input type="text" id="JS_be" placeholder="后台中转callback地址" value="http://huodong.office.bzdev.net/restful/lotterywechat/callback.json?service_appid=wx06297e68f1f987bd&redirect_uri=" />
+    <button type="button" value="狠狠点击我来编码" id="JS_btn">狠狠点击我来编码</button>
+    <textarea id="JS_url_1"></textarea>
+    <textarea id="JS_url_2"></textarea>
+    <textarea id="JS_url_3"></textarea>
+    <section id="JS_canvas"></section>
+    <script type="text/javascript" src="/common/js/seajs.min.js"></script>
+    <script type="text/javascript">
+    function $$(id) {
+        return document.getElementById(id);
+    }
+
+    seajs.use("arale-qrcode/1.1.0/index", function(qrcode) {
+        $$("JS_btn").addEventListener("click", function() {
+            $$("JS_url_1").value = $$("JS_be").value + encodeURIComponent($$("JS_fe").value);
+            $$("JS_url_2").value = "http://source.bozhong.com/wechat/redirect.html?redirect_uri=" + encodeURIComponent($$("JS_url_1").value);
+            $$("JS_url_3").value = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx06297e68f1f987bd&redirect_uri=" + encodeURIComponent($$("JS_url_2").value) + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+            var qr = new qrcode({
+                text: $$("JS_url_3").value,
+                width: 240,
+                height: 240
+            });
+            //document.body.appendChild(qr);
+            $("#JS_canvas").html(qr)
+
+        }, false)
+
+    });
+    </script>
+</body>
+
+</html>
