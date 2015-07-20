@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var fs = require("fs");
 
 app.set("view engine", "html");
 app.set("views", express.static(__dirname+"/views"));
@@ -7,6 +8,7 @@ app.set("views", express.static(__dirname+"/views"));
 app.use('/common', express.static( __dirname + '/statics/common' )); // 读取静态资源
 app.use('/moe', express.static( __dirname + '/statics/moe' )); // 读取静态资源
 app.use('/', express.static( __dirname + '/views' )); // 读取静态资源
+
 
 function getUAVersion(u){
     var versions = {         //移动终端浏览器版本信息
@@ -52,12 +54,12 @@ var server = app.listen(6001, function(){
 			client.broadcast.emit("get-wechat-code", xx);
 	    });
 	    client.on("web_logger", function(xx){
-			client.broadcast.emit("web_logger", {
-				content: xx,
-				host: client.handshake.address.replace("::ffff:",""),
+            client.broadcast.emit("web_logger", {
+                content: xx,
+                host: client.client.conn.remoteAddress.replace("::ffff:",""),
                 ua: getUAVersion(client.handshake.headers["user-agent"])
-			});
-	    });
+            });
+        });
 	    
 		client.on("disconnect", function(){
 		});
