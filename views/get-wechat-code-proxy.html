@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" /> 
+	<title>代理获取微信授权的code</title>
+	<script type="text/javascript" src="/common/js/socket.io.js"></script>
+	<style type="text/css">
+		body { font-size: 30px; word-break: break-word; }
+	</style>
+</head>
+<body>
+	<div id="JS_params">
+		
+	</div>
+	<script type="text/javascript">
+		var getWechatUrl = function(){
+			var local = encodeURIComponent( window.location.href.replace("-proxy", "") );
+			var proxy = encodeURIComponent( 'http://source.bozhong.com/wechat/redirect.html?redirect_uri=' + local );
+			var wechat = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx06297e68f1f987bd&redirect_uri=' + proxy + '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+			return wechat;
+		}
+		window.location.href = getWechatUrl();
+	</script>
+</body>
+</html>

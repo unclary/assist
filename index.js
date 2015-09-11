@@ -1,9 +1,53 @@
 var express = require('express');
 var app = express();
 var fs = require("fs");
+var path = require("path");
+
+var shortUrl = {};
+
+function getParam(url, name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(url);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
 
 app.set("view engine", "html");
 app.set("views", express.static(__dirname+"/views"));
+
+app.use(function(req, res, next){
+    for( var i in shortUrl){
+        if( parseInt(new Date().getTime()/1000,10) - i >= 1 * 86400 ){
+            delete shortUrl[i];
+        }
+    }
+    next();
+});
+
+app.get("/shorturl.json", function(req, res){
+    var u = getParam(req.url, "url");
+    var stamp = parseInt(new Date().getTime()/1000,10);
+    if( !!u ){
+        shortUrl[ stamp+"" ] = u;
+        res.send({
+            code: 200,
+            data: "/shorturl/"+stamp
+        });
+    } else {
+        res.send({
+            code: 1000,
+            data: "参数url不能为空"
+        });
+    }
+});
+
+app.get("/shorturl/:uri", function(req, res, next){
+    if( !!shortUrl[req.params.uri] ){
+        res.redirect(shortUrl[req.params.uri]);
+    } else {
+        next();
+    }
+});
 
 app.use('/common', express.static( __dirname + '/statics/common' )); // 读取静态资源
 app.use('/moe', express.static( __dirname + '/statics/moe' )); // 读取静态资源
@@ -43,16 +87,22 @@ function getUAVersion(u){
 }
 
 var server = app.listen(6001, function(){
+    console.log("listen to 6001");
 	var io = require('socket.io')(server);
 	io.on('connection', function(client){ 
 		client.on("get", function(xx){
 			client.broadcast.emit("get", xx);
 	    });
 	    client.on("get-wechat-code", function(xx){
-	    	xx.ua = getUAVersion(client.handshake.headers["user-agent"]);
+            xx.ua = getUAVersion(client.handshake.headers["user-agent"]);
             xx.host = client.handshake.address.replace("::ffff", "");
-			client.broadcast.emit("get-wechat-code", xx);
-	    });
+            client.broadcast.emit("get-wechat-code", xx);
+        });
+        client.on("callback-result", function(xx){
+            xx.ua = getUAVersion(client.handshake.headers["user-agent"]);
+            xx.host = client.handshake.address.replace("::ffff", "");
+            client.broadcast.emit("callback-result", xx);
+        });
 	    client.on("web_logger", function(xx){
             client.broadcast.emit("web_logger", {
                 content: xx,

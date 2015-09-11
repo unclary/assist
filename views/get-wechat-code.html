@@ -4,15 +4,20 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" /> 
 	<title>获取微信授权的code</title>
+	<script type="text/javascript" src="/common/js/seajs.min.js"></script>
 	<script type="text/javascript" src="/common/js/socket.io.js"></script>
 	<style type="text/css">
 		body { font-size: 30px; word-break: break-word; }
 	</style>
 </head>
 <body>
+	<div id="JS_canvas">
+		
+	</div>
 	<div id="JS_params">
 		
 	</div>
+	
 	<script type="text/javascript">
 		function getParam(name) {
 		    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -43,8 +48,13 @@
 		}
 		window.onload = function(){
 			var ws = io.connect(window.location.origin);
+			ws.on("get-wechat-code", function(data){
+				var result = '<br/>model: '+data.ua.model+'<br/>code: '+data.code+'<br/>state: '+data.state+'<br/>url: '+data.url;
+				document.querySelector("#JS_params").innerHTML = document.querySelector("#JS_params").innerHTML+result+"<hr>";
+				codeArr[data.code] = data;
+			});
 			if( !!getParam("code") ){
-				var result = 'code: '+getParam("code")+'<br/>state: '+getParam("state")+'<br/>url: '+window.location.href;
+				var result = 'code: '+getParam("code")+'<br/>state: '+getParam("state")+'<br/>url: '+window.location.href + "<hr>";
 				document.querySelector("#JS_params").innerHTML = result;
 				ws.emit("get-wechat-code", {
 					code: getParam("code"),
@@ -53,7 +63,15 @@
 				});
 				return false;
 			} else {
-				window.location.href = window.location.href.getWechatUrl();
+				seajs.use("arale-qrcode/1.1.0/index", function(qrcode) {
+		            var qr = new qrcode({
+		                text: window.location.href.replace("get-wechat-code.html", "get-wechat-code-proxy.html"),
+		                width: 240,
+		                height: 240
+		            });
+		            //document.body.appendChild(qr);
+		            $("#JS_canvas").html(qr);
+			    });
 			}
 
 		}
