@@ -25,4 +25,3 @@ spm_modules
 dist
 coverage
 /statics/common/js/logger.js
-/views/logger.html

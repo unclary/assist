@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport" /> 
+	<title>在线日志</title>
+	<script type="text/javascript" src="common/js/logger_default.js"></script>
+	<style type="text/css">
+	div { width: 100%; word-break: break-word; }
+	span { color: red; }
+	em { font-style: normal; }
+	i { color: green; font-style: normal; }
+	textarea { width: 100%; line-height: 30px; }
+	</style>
+</head>
+<body>
+	<div id="JS_insertLogger"></div>
+	<div>引入以上地址可以使用在线日志输出，使用方法： log(str); </div>
+	
+	
+	<script type="text/javascript">
+		
+		document.getElementById("JS_insertLogger").innerHTML = '&#60;script src="'+ window.location.origin +'/common/js/logger.js"&#62;&#60;/script&#62;';
+		function getParam(name) {
+		    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+		    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+		        results = regex.exec(location.search);
+		    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+		}
+		Date.prototype.Format = function(fmt) {
+			var o = {
+				"M+": this.getMonth() + 1, //鏈堜唤 
+				"d+": this.getDate(), //鏃� 
+				"h+": this.getHours(), //灏忔椂 
+				"m+": this.getMinutes(), //鍒� 
+				"s+": this.getSeconds(), //绉� 
+				"q+": Math.floor((this.getMonth() + 3) / 3), //瀛ｅ害 
+				"S": this.getMilliseconds() //姣 
+			};
+			if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+			for (var k in o)
+				if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+			return fmt;
+		}
+		window.onload = function(){
+			var ws = io.connect(window.location.origin);
+			if( !!getParam("ip") ){
+				document.body.appendChild( createNode("div", "Following logger is "+getParam("ip")) );
+				document.body.appendChild( createNode("div", "------------------------------------------------------------") );
+			} 
+			ws.on("web_logger", function(data){
+				console.log(data);
+				if( !!getParam("ip") && getParam("ip") != data.host ) return false;
+				var div = document.createElement("div");
+				var span = document.createElement("span");
+				var em = document.createElement("em");
+				var i = document.createElement("i");
+				var hr = document.createElement("hr");
+				span.innerText = new Date().Format("MM-dd hh:mm:ss")+"　　";
+				em.innerText = JSON.stringify(data.content);
+				i.innerText = data.host + " " + data.ua.model + " ";
+				div.appendChild(i);
+				div.appendChild(span);
+				div.appendChild(em);
+				document.body.appendChild( div );
+				document.body.appendChild( hr );
+			});
+			// ws.emit("interval", "test");
+			// setInterval(function(){
+			// 	ws.emit("interval", "test");
+			// },20000);
+
+			function createNode(type, text, classname){
+				var node = document.createElement(type);
+				node.innerText = text||"";
+				classname && (node.class = classname);
+				return node;
+			}
+		
+			function getNum(str, n){
+				var num = 1;
+				for(var i=0; i<str.length; i++){
+					num *= str.charCodeAt(i);
+				}
+				return num%n;
+			}
+		}
+	</script>
+</body>
+</html>
