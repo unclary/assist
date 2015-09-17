@@ -13,10 +13,17 @@ function getParam(url, name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
+
+
 app.set("view engine", "html");
 app.set("views", express.static(__dirname+"/views"));
 
 app.use(function(req, res, next){
+    var origin = !!req.headers.referer ? req.headers.referer.match(/http:\/\/[^/]*/)[0] : 'http://www.unclay.com';
+    origin = !!origin.match(/bozhong\.com|office\.bzdev\.net|online\.seedit\.cc|unclay\.com/) ? origin : 'http://www.unclay.com';
+    res.header("Access-Control-Allow-Origin", origin);
+    res.header("Access-Control-Allow-Methods", "GET,POST");
+    res.header("Access-Control-Allow-Credentials", true);
     for( var i in shortUrl){
         if( parseInt(new Date().getTime()/1000,10) - i >= 1 * 86400 ){
             delete shortUrl[i];
