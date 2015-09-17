@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var fs = require("fs");
 var path = require("path");
+var os = require("os");
 
 var shortUrl = {};
 
@@ -86,8 +87,9 @@ function getUAVersion(u){
     return versions;
 }
 
-var server = app.listen(6001, function(){
-    console.log("listen to 6001");
+var port = os.cpus()[0].model.indexOf("i5-4690") >= 0 ? 6001 : (os.type().indexOf("Window")>=0||os.cpus()[0].model.indexOf("M 380") >= 0) ? 6001 : 18080;
+var server = app.listen(port, function(){
+    console.log("listen to "+port);
 	var io = require('socket.io')(server);
 	io.on('connection', function(client){ 
 		client.on("get", function(xx){
