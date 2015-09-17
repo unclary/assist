@@ -7001,4 +7001,5 @@ function toArray(list, index) {
 var ws = io.connect("http://192.168.80.216:6001");
 window.log = function(txt){
 	ws.emit("web_logger", txt);
+  !!_hmt && _hmt.push(['_trackEvent', 'assist', 'assist-log', '', 1]);
 }

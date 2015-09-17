@@ -65,6 +65,7 @@
         });
         seajs.use("arale-qrcode/1.1.0/index", function(qrcode) {
             $$("JS_btn").addEventListener("click", function() {
+                _hmt.push(['_trackEvent', 'assist', 'assist-生成微信二维码', '', 1]);
                 $$("JS_url_1").value = $$("JS_be").value + encodeURIComponent($$("JS_fe").value);
                 $$("JS_url_2").value = "http://source.bozhong.com/wechat/redirect.html?redirect_uri=" + encodeURIComponent($$("JS_url_1").value);
                 $$("JS_url_3").value = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx06297e68f1f987bd&redirect_uri=" + encodeURIComponent($$("JS_url_2").value) + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
@@ -98,6 +99,16 @@
     }
     
     </script>
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "//hm.baidu.com/hm.js?6a1163b7a0265070fbd7f1258b07c101";
+          var s = document.getElementsByTagName("script")[0]; 
+          s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
 </body>
 
 </html>

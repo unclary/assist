@@ -48,10 +48,13 @@
 		}
 		window.onload = function(){
 			var ws = io.connect(window.location.origin);
+			var codeArr = {};
 			ws.on("get-wechat-code", function(data){
+				if( !!codeArr[data.code] ) return false;
 				var result = '<br/>model: '+data.ua.model+'<br/>code: '+data.code+'<br/>state: '+data.state+'<br/>url: '+data.url;
 				document.querySelector("#JS_params").innerHTML = document.querySelector("#JS_params").innerHTML+result+"<hr>";
 				codeArr[data.code] = data;
+				_hmt.push(['_trackEvent', 'assist', 'assist-获取微信CODE', 'assist-微信CODE:'+data.code, 1]);
 			});
 			if( !!getParam("code") ){
 				var result = 'code: '+getParam("code")+'<br/>state: '+getParam("state")+'<br/>url: '+window.location.href + "<hr>";
@@ -73,8 +76,16 @@
 		            $("#JS_canvas").html(qr);
 			    });
 			}
-
 		}
+	</script>
+	<script>
+		var _hmt = _hmt || [];
+		(function() {
+		  var hm = document.createElement("script");
+		  hm.src = "//hm.baidu.com/hm.js?6a1163b7a0265070fbd7f1258b07c101";
+		  var s = document.getElementsByTagName("script")[0]; 
+		  s.parentNode.insertBefore(hm, s);
+		})();
 	</script>
 </body>
 </html>
