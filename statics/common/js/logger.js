@@ -6998,7 +6998,7 @@ function toArray(list, index) {
 },{}]},{},[1])
 (1)
 });
-var ws = io.connect("http://assist.unclay.com");
+var ws = io.connect("http://wclassist.duapp.com");
 window.log = function(txt){
 	ws.emit("web_logger", txt);
   !!_hmt && _hmt.push(['_trackEvent', 'assist', 'assist-log', '', 1]);
